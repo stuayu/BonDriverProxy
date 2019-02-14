@@ -799,23 +799,13 @@ DWORD cProxyServer::Process()
 						if (ss.ss_family == AF_INET)
 						{
 							// IPv4
-#ifdef _WIN64
 							::inet_ntop(AF_INET, &(si4.sin_addr), addr, sizeof(addr));
-#else
-							::lstrcpyA(addr, ::inet_ntoa(si4.sin_addr));
-#endif
 							port = ::ntohs(si4.sin_port);
 						}
 						else
 						{
 							// IPv6
-#ifdef _WIN64
 							::inet_ntop(AF_INET6, &(si6.sin6_addr), addr, sizeof(addr));
-#else
-							char *cp = addr;
-							for (int i = 0; i < 16; i += 2)
-								cp += ::wsprintfA(cp, "%02x%02x%c", si6.sin6_addr.s6_addr[i], si6.sin6_addr.s6_addr[i + 1], (i != 14) ? ':' : '\0');
-#endif
 							port = ::ntohs(si6.sin6_port);
 						}
 					}
@@ -1524,23 +1514,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMsg, WPARAM wParam, LPARAM lParam)
 				if (ss.ss_family == AF_INET)
 				{
 					// IPv4
-#ifdef _WIN64
 					inet_ntop(AF_INET, &(si4.sin_addr), addr, sizeof(addr));
-#else
-					lstrcpyA(addr, inet_ntoa(si4.sin_addr));
-#endif
 					port = ntohs(si4.sin_port);
 				}
 				else
 				{
 					// IPv6
-#ifdef _WIN64
 					inet_ntop(AF_INET6, &(si6.sin6_addr), addr, sizeof(addr));
-#else
-					char *p = addr;
-					for (int i = 0; i < 16; i += 2)
-						p += wsprintfA(p, "%02x%02x%c", si6.sin6_addr.s6_addr[i], si6.sin6_addr.s6_addr[i + 1], (i != 14) ? ':' : '\0');
-#endif
 					port = ntohs(si6.sin6_port);
 				}
 			}
