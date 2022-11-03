@@ -1,0 +1,34 @@
+name: BonDriverProxy_Build
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-2022
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Add msbuild to PATH
+        uses: microsoft/setup-msbuild@v1.1
+
+      - name: MSBuild
+        run: |
+          MSBuild BonDriverProxy.sln /t:build /p:Configuration=Release /p:Platform=x64
+          MSBuild BonDriverProxy.sln /t:build /p:Configuration=Release /p:Platform=Win32
+
+      - name: save build data x64
+        uses: actions/upload-artifact@v2
+        with:
+          name: BonDriverProxy_x64
+          path: x64/Release
+
+      - name: save build data win32
+        uses: actions/upload-artifact@v2
+        with:
+          name: BonDriverProxy_win32
+          path: Release
+     
