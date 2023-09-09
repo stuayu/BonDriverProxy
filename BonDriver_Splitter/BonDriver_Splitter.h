@@ -27,10 +27,10 @@
 #define TS_FEC_PKTSIZE		204
 #define TTS_FEC_PKTSIZE		208
 
-#define MAX_DRIVER			16		// 99ˆÈ‰º
-#define MAX_SPACE			16		// 99ˆÈ‰º
+#define MAX_DRIVER			99		// 99ˆÈ‰º
+#define MAX_SPACE			99		// 99ˆÈ‰º
 #define MAX_SPACE_LEN		64
-#define MAX_CH				128		// 999ˆÈ‰º
+#define MAX_CH				999		// 999ˆÈ‰º
 #define MAX_CN_LEN			64
 
 struct stChannel {
