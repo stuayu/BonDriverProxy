@@ -111,10 +111,13 @@ static int Init(HMODULE hModule)
 		key[0] = (char)('0' + (i / 10));
 		key[1] = (char)('0' + (i % 10));
 		GetPrivateProfileStringA("BONDRIVER", key, "", buf, sizeof(buf), szIniPath);
+		// NULL文字の検出
 		if (buf[0] == '\0')
 			break;
+		// ドライブレターの検知をしてるっぽい(絶対パス)
 		if (((buf[0] >= 'A' && buf[0] <= 'Z') || (buf[0] >= 'a' && buf[0] <= 'z')) && buf[1] == ':' && buf[2] == '\\')
 			g_vBonDrivers.push_back(buf);
+		// 絶対パスでない場合の処理
 		else
 		{
 			strcpy(p, buf);
@@ -159,6 +162,11 @@ static int Init(HMODULE hModule)
 			key[1] = (char)('0' + ((j % 100) / 10));
 			key[2] = (char)('0' + (j % 10));
 			GetPrivateProfileStringA(section, key, "", buf, sizeof(buf), szIniPath);
+			// スペースやタブなどをスペースに置換
+			std::regex reg(R"(\s+)");
+			std::string tabStr = std::regex_replace(buf, reg, " ");
+			// bufへ代入したい
+			strcpy(buf, tabStr.c_str());
 			if (buf[0] == '\0')
 				break;
 			int n = 0;
@@ -167,7 +175,7 @@ static int Init(HMODULE hModule)
 			p = cp[n++] = buf;
 			for (;;)
 			{
-				p = strchr(p, '\t');
+				p = strchr(p, ' ');
 				if (p)
 				{
 					*p++ = '\0';

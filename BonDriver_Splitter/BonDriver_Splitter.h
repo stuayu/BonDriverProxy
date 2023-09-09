@@ -6,6 +6,8 @@
 #include <queue>
 #include <vector>
 #include <string>
+// íuä∑ÇÃÇΩÇﬂ
+#include <regex>
 #include "Common.h"
 #include "IBonDriver2.h"
 
