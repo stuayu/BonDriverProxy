@@ -29,6 +29,11 @@ enum enumCommand {
 	eGetClientInfo,
 };
 
+enum enumOption {
+	eNoOption       = 0x000,
+	eDesireToUseB25 = 0X001,
+};
+
 #pragma pack(push, 1)
 
 struct stPacketHead {
@@ -84,6 +89,12 @@ public:
 		m_Size = sizeof(stPacketHead) + PayloadSize;
 	}
 
+	cPacketHolder(enumCommand eCmd, size_t PayloadSize, enumOption bOptionFlag)
+		: cPacketHolder(eCmd, PayloadSize)
+	{
+		SetOption(bOptionFlag);
+	}
+
 	~cPacketHolder()
 	{
 		if (m_bDelete)
@@ -93,6 +104,7 @@ public:
 	inline BOOL IsTS(){ return (m_pPacket->head.m_bCommand == (BYTE)eGetTsStream); }
 	inline enumCommand GetCommand(){ return (enumCommand)m_pPacket->head.m_bCommand; }
 	inline void SetCommand(enumCommand eCmd){ m_pPacket->head.m_bCommand = (BYTE)eCmd; }
+	inline void SetOption(enumOption eOpt) { m_pPacket->head.m_bReserved1 = (BYTE)eOpt; }
 	inline DWORD GetBodyLength(){ return ::ntohl(m_pPacket->head.m_dwBodyLength); }
 	inline void SetDeleteFlag(BOOL b){ m_bDelete = b; }
 };

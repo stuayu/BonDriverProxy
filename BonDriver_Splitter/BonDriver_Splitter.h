@@ -14,26 +14,27 @@
 #if _DEBUG
 #define _CRTDBG_MAP_ALLOC
 #include <crtdbg.h>
-#define new new(_NORMAL_BLOCK, __FILE__, __LINE__)
+#define new new (_NORMAL_BLOCK, __FILE__, __LINE__)
 #endif
 
-#define TUNER_NAME	L"BonDriverSplitter"
+#define TUNER_NAME L"BonDriverSplitter"
 
-#define WAIT_TIME			10		// GetTsStream()ÇÃå„Ç≈ÅAdwRemainÇ™0ÇæÇ¡ÇΩèÍçáÇ…ë“Ç¬éûä‘(ms)
+#define WAIT_TIME 10 // GetTsStream()ÇÃå„Ç≈ÅAdwRemainÇ™0ÇæÇ¡ÇΩèÍçáÇ…ë“Ç¬éûä‘(ms)
 
-#define TS_SYNC_BYTE		0x47
-#define TS_PKTSIZE			188
-#define TTS_PKTSIZE			192
-#define TS_FEC_PKTSIZE		204
-#define TTS_FEC_PKTSIZE		208
+#define TS_SYNC_BYTE 0x47
+#define TS_PKTSIZE 188
+#define TTS_PKTSIZE 192
+#define TS_FEC_PKTSIZE 204
+#define TTS_FEC_PKTSIZE 208
 
-#define MAX_DRIVER			99		// 99à»â∫
-#define MAX_SPACE			99		// 99à»â∫
-#define MAX_SPACE_LEN		64
-#define MAX_CH				999		// 999à»â∫
-#define MAX_CN_LEN			64
+#define MAX_DRIVER 99 // 99à»â∫
+#define MAX_SPACE 99  // 99à»â∫
+#define MAX_SPACE_LEN 64
+#define MAX_CH 999 // 999à»â∫
+#define MAX_CN_LEN 64
 
-struct stChannel {
+struct stChannel
+{
 	WCHAR ChName[MAX_CN_LEN];
 	int BonNo;
 	DWORD BonSpace;
@@ -41,7 +42,8 @@ struct stChannel {
 	DWORD ServiceID;
 };
 
-struct stSpace {
+struct stSpace
+{
 	WCHAR SpaceName[MAX_SPACE_LEN];
 	BOOL bUseServiceID;
 	std::vector<stChannel> vstChannel;
@@ -60,22 +62,24 @@ static DWORD g_dwDelFlag;
 
 ////////////////////////////////////////////////////////////////////////////////
 
-struct TS_DATA {
+struct TS_DATA
+{
 	BYTE *pbBuf;
 	DWORD dwSize;
-	TS_DATA(BYTE *pb, DWORD dw) : pbBuf(pb), dwSize(dw){}
-	~TS_DATA(){ delete[] pbBuf; }
+	TS_DATA(BYTE *pb, DWORD dw) : pbBuf(pb), dwSize(dw) {}
+	~TS_DATA() { delete[] pbBuf; }
 };
 
-class cTSFifo : protected std::queue<TS_DATA *> {
+class cTSFifo : protected std::queue<TS_DATA *>
+{
 	const size_t m_fifoSize;
 	cCriticalSection m_Lock;
 	cEvent m_Event;
-	cTSFifo &operator=(const cTSFifo &);	// shut up C4512
+	cTSFifo &operator=(const cTSFifo &); // shut up C4512
 
 public:
-	cTSFifo() : m_fifoSize(g_TsFifoSize), m_Event(TRUE, FALSE){}
-	~cTSFifo(){ Flush(); }
+	cTSFifo() : m_fifoSize(g_TsFifoSize), m_Event(TRUE, FALSE) {}
+	~cTSFifo() { Flush(); }
 
 	void Flush()
 	{
@@ -132,7 +136,8 @@ public:
 
 ////////////////////////////////////////////////////////////////////////////////
 
-class cBonDriverSplitter : public IBonDriver2 {
+class cBonDriverSplitter : public IBonDriver2
+{
 	HMODULE m_hBonModule;
 	IBonDriver2 *m_pIBon2;
 	cEvent m_eCloseTuner;
@@ -171,8 +176,8 @@ class cBonDriverSplitter : public IBonDriver2 {
 	static DWORD WINAPI TsReader(LPVOID pv);
 	static DWORD WINAPI TsSplitter(LPVOID pv);
 	BOOL TsSync(BYTE *pSrc, DWORD dwSrc, BYTE **ppDst, DWORD *pdwDst);
-	static inline unsigned short GetPID(BYTE *p){ return (((unsigned short)(p[0] & 0x1f) << 8) | p[1]); }
-	static inline unsigned short GetSID(BYTE *p){ return (((unsigned short)p[0] << 8) | p[1]); }
+	static inline unsigned short GetPID(BYTE *p) { return (((unsigned short)(p[0] & 0x1f) << 8) | p[1]); }
+	static inline unsigned short GetSID(BYTE *p) { return (((unsigned short)p[0] << 8) | p[1]); }
 
 public:
 	static cBonDriverSplitter *m_spThis;
@@ -203,4 +208,4 @@ public:
 	const DWORD GetCurChannel(void);
 };
 
-#endif	// __BONDRIVER_SPLITTER_H__
+#endif // __BONDRIVER_SPLITTER_H__

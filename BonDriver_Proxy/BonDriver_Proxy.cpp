@@ -53,6 +53,7 @@ static int Init(HMODULE hModule)
 			g_TargetMac[i] = b;
 		}
 	}
+	g_DesireToUseB25 = (BOOL)GetPrivateProfileIntA("OPTION", "B25", 0, szIniPath);
 
 	g_PacketFifoSize = GetPrivateProfileIntA("SYSTEM", "PACKET_FIFO_SIZE", 64, szIniPath);
 	g_TsFifoSize = GetPrivateProfileIntA("SYSTEM", "TS_FIFO_SIZE", 64, szIniPath);
@@ -408,7 +409,8 @@ void cProxyClient::makePacket(enumCommand eCmd, DWORD dw1, DWORD dw2)
 
 void cProxyClient::makePacket(enumCommand eCmd, DWORD dw1, DWORD dw2, BYTE b)
 {
-	cPacketHolder *p = new cPacketHolder(eCmd, (sizeof(DWORD) * 2) + sizeof(BYTE));
+	enumOption eOpt = g_DesireToUseB25 ? eDesireToUseB25 : eNoOption;
+	cPacketHolder *p = new cPacketHolder(eCmd, (sizeof(DWORD) * 2) + sizeof(BYTE), eOpt);
 	DWORD *pos = (DWORD *)(p->m_pPacket->payload);
 	*pos++ = ::htonl(dw1);
 	*pos++ = ::htonl(dw2);
